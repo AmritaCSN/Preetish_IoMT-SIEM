@@ -27,9 +27,13 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 | **Benign Injection**      | Inject fake protocols and user agents |
 | **Field Removal**         | Remove obvious attack-specific fields |
 
-## Architecture
+## Block Diagram
 
-![Project Architecture](archi.jpg)
+![Project Architecture](arch.jpg)
+
+## Architecture - Attack & Remediation Flow
+
+![Project Architecture](model.jpg)
 
 *(Replace with your actual architecture diagram)*
 
@@ -43,8 +47,8 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 | `minio-to-wazuh.conf`    | Logstash / Filebeat configuration for ingestion |
 | `rag_pipeline.py`        | RAG orchestration for retrieval and validation data |
 | `llm_remediation.py`     | LLM-based reclassification, explanation & remediation generation |
-| `archi.jpg`              | System architecture diagram |
-| `Block_diagram.png`      | Block diagram of the pipeline |
+| `arch.png`              | Block diagram of the pipeline |
+|`model.png`              | System architecture - Attack & Remediation Flow  |
 | `README.md`              | This file |
 
 ## 🔧 Tools & Technologies Used
