@@ -80,7 +80,8 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
 ## Setup & Usage
 1. Obtaining Benign & Malicious Logs from XIoMT2024 Dataset
-   Use benign_and_malicious_logs.py
+
+   Use **benign_and_malicious_logs.py**
 
    One benign log:
    ```bash
@@ -92,20 +93,21 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
    {"timestamp":"2026-04-13T21:41:56.821Z","log_level":"ERROR","log_version":"1.5","facility":"hospital-ward3","environment":"production","region":"tn-india","data_center":"chennai-dc1","device":{"id":"BLO-423-1060","type":"BloodPressureMonitor","serial_number":"SN-888387","model":"VSM-2024","mac_address":"00:1A:2B:13:0B:44"},"event":{"type":"ANOMALY_DETECTED","category":"SecurityThreat","action":"BRUTE_FORCE","id":"evt-mal-20260413214156821","correlation_id":"corr-mal-20260413214156821-001"},"network":{"protocol":"MQTT","mqtt_topic":"iot/hospital/bloodpressuremonitor/ward3/bed16","mqtt_qos":2,"src_ip":"10.42.0.139","dst_ip":"10.42.0.1","signal_strength_dbm":-65,"connection_type":"WiFi"},"payload":{"sensor_value":37.6,"sensor_unit":"°C","trend":"stable","measurement_time":"2026-04-13T21:41:53.000Z"},"metrics":{"bytes_sent":329,"cpu_usage_percent":63.7,"battery_level_percent":41},"status":{"outcome":"suspicious"},"message":"Multiple failed authentication attempts on BloodPressureMonitor","tags":["malicious","bruteforce","iot_attack"]}
    ```
    
-3. First Convert your batch files into proper JSON Lines format (.jsonl).
-(a) Create a directory for the flattened logs
-```bash
-mkdir -p ../flattened_jsonl
-```
-(b) Convert ALL batch files to JSON Lines format (one log per line)
-```bash
-for file in batch_*.json; do   
- echo "Converting $file ..."    
-jq -c '.[]' "$file" > "../flattened_jsonl/${file%.json}.jsonl"
-Done
-echo "Conversion completed!"
-ls -lh ../flattened_jsonl/
-```
+3. First Convert your batch files into proper JSON Lines format (.jsonl)
+
+   (a) Create a directory for the flattened logs
+   ```bash
+   mkdir -p ../flattened_jsonl
+   ```
+   (b) Convert ALL batch files to JSON Lines format (one log per line)
+   ```bash
+   for file in batch_*.json; do   
+    echo "Converting $file ..."    
+   jq -c '.[]' "$file" > "../flattened_jsonl/${file%.json}.jsonl"
+   Done
+   echo "Conversion completed!"
+   ls -lh ../flattened_jsonl/
+   ```
 
 4. Configure Wazuh to Read Them, go to cd /var/ossec/etc/rules/
    ```bash
@@ -158,6 +160,7 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
 
 
 6. Poisoning and Sanitization
+   
    Use poison.py
 
    One sanitized poisoned log:
@@ -165,7 +168,7 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
    {"timestamp": "172.16.5.91", "log_level": "WARNING", "log_version": "172.16.2.133", "facility": "hospital-ward3", "environment": "production", "region": "tn-india", "data_center": "chennai-dc1", "device": {"id": "HEA-999-1065", "type": "HeartRateMonitor", "serial_number": "SN-240814", "model": "VSM-2024", "mac_address": "172.16.13.144"}, "event": {"type": "ANOMALY_DETECTED", "category": "SecurityThreat", "action": "normal", "id": "evt-mal-20260414211756547", "correlation_id": "corr-mal-20260414211756547-001"}, "network": {"protocol": "CoAP", "mqtt_topic": "vitals-monitor.internal", "mqtt_qos": 1, "src_ip": "172.16.11.4", "dst_ip": "172.16.8.96", "signal_strength_dbm": -80, "connection_type": "WiFi"}, "metrics": {"bytes_sent": 2545, "cpu_usage_percent": 95.2, "battery_level_percent": 17}, "status": {"outcome": "success", "result": "ok"}, "message": "Mirai-like bot command received on HeartRateMonitor", "tags": ["benign", "normal", "iot", "periodic", "vitals"], "protocol": "MQTT", "user_agent": "EdgeGateway/3.2"}
    ```
 
- 7. Ingesting benign, malicious and Poisoned Logs to wazuh
+ 8. Ingesting benign, malicious and Poisoned Logs to wazuh
     ```bash
     echo "Starting ingestion of IoMT logs..."
       for file in batch_*.jsonl; do
@@ -181,8 +184,16 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 img--------------------------------
 
 8. Wazuh detection report
-   Use report.py
 
+   Use report.py
+   
+10. Log Validation
+
+   Now we use a Pyhton script to validate logs from MinIO and Wazuh's Detction report
+
+   use **validation.py**
+
+   
 
 To remove all logs from wazuh
 - Open your Wazuh Dashboard.
