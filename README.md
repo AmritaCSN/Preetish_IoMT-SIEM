@@ -83,6 +83,8 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
    Use **benign_and_malicious_logs.py**
 
+   ![JSON_Logs](json.jpeg)
+
    One benign log:
    ```bash
    {"timestamp":"2026-04-14T14:08:54.382Z","log_level":"INFO","log_version":"1.5","facility":"hospital-ward3","environment":"production","region":"tn-india","data_center":"chennai-dc1","device":{"id":"SPO-854-1077","type":"SpO2Monitor","serial_number":"SN-448321","model":"VSM-2024","mac_address":"00:1A:2B:3E:5F:29"},"event":{"type":"DATA_TRANSMIT","category":"DataTransmission","action":"PUBLISH","id":"evt-20260414140854382","correlation_id":"corr-20260414140854382-001"},"network":{"protocol":"MQTT","mqtt_topic":"0","mqtt_qos":0,"src_ip":"10.42.0.139","dst_ip":"10.42.0.1","signal_strength_dbm":-54,"connection_type":"WiFi"},"payload":{"sensor_value":99,"sensor_unit":"units","trend":"falling","measurement_time":"2026-04-14T14:08:51.000Z"},"metrics":{"bytes_sent":242,"cpu_usage_percent":26.2,"battery_level_percent":91},"status":{"outcome":"success"},"message":"Routine SpO2Monitor reading transmitted successfully","tags":["benign","periodic","vitals"]}
@@ -108,6 +110,7 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
    echo "Conversion completed!"
    ls -lh ../flattened_jsonl/
    ```
+   ![JSONL_Logs](jsonl.jpeg)
 
 4. Configure Wazuh to Read Them, go to cd /var/ossec/etc/rules/
    ```bash
@@ -150,7 +153,8 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
    ```
    
 Wazuh Dashboard showing detection of all malicious logs as high and critical alerts, benign as low
-image--------------------------------
+
+![Clean_Detection](clean_detection.jpeg)
 
    - Total events: 21,140
    - Level 12 or above alerts: 20,731 ← This matches exactly with the number of malicious logs generated.
@@ -181,7 +185,7 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
     ```
 
 Wazuh Dashboard showing detection of all malicious logs as high and critical alerts, benign and Poisoned as low
-img--------------------------------
+![Poisoned_Detection](poisoned_detection.jpeg)
 
 8. Wazuh detection report
 
@@ -193,6 +197,10 @@ img--------------------------------
 
    use **validation.py**
 
+   The summary is saved inside **malicious_validation_summary.txt**
+   ```bash
+   cat malicious_validation_summary.txt
+   ```
    
 
 To remove all logs from wazuh
