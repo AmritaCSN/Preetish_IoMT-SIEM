@@ -4,25 +4,20 @@ import os
 import random
 from datetime import datetime, timedelta, timezone
 
-# ===================== CONFIG =====================
-# Correct path to your CSV files (one level up from current folder)
-INPUT_FOLDER = ".."                                   # Goes to ~/X-IoMTDataset/Cleaned_For_Logs/
+INPUT_FOLDER = ".."
 OUTPUT_FOLDER = "logs_B_M"
 TOTAL_LOGS = 80731
 BENIGN_LOGS_TARGET = 60000
-MALICIOUS_LOGS_TARGET = TOTAL_LOGS - BENIGN_LOGS_TARGET  # 20731
+MALICIOUS_LOGS_TARGET = TOTAL_LOGS - BENIGN_LOGS_TARGET
 BATCH_SIZE = 2000
-# =================================================
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-random.seed(42)  # for reproducibility
+random.seed(42)
 
 print(f"Starting generation of {TOTAL_LOGS:,} logs ({BENIGN_LOGS_TARGET:,} Benign + {MALICIOUS_LOGS_TARGET:,} Malicious)\n")
 
-# ===================== DEVICE POOL =====================
 device_types = ["GlucoseMonitor", "HeartRateMonitor", "SpO2Monitor", "TemperatureMonitor",
                 "ECGMonitor", "InfusionPump", "Ventilator", "BloodPressureMonitor"]
-
 device_pool = []
 for i in range(80):
     dev_type = random.choice(device_types)
@@ -34,24 +29,20 @@ for i in range(80):
         "mac_address": f"00:1A:2B:{random.randint(10,99):02X}:{random.randint(10,99):02X}:{random.randint(10,99):02X}"
     })
 
-# ===================== CHECK CSV FILES =====================
-csv_files = sorted([f for f in os.listdir(INPUT_FOLDER) 
+csv_files = sorted([f for f in os.listdir(INPUT_FOLDER)
                     if f.startswith("NormalTrafficMQTT_part_") and f.endswith(".csv")])
-
 if not csv_files:
-    print("❌ ERROR: Could not find NormalTrafficMQTT_part_*.csv files!")
-    print(f"   Searched in: {os.path.abspath(INPUT_FOLDER)}")
-    print("   Please check the path and run again.")
+    print("ERROR: Could not find NormalTrafficMQTT_part_*.csv files!")
+    print(f" Searched in: {os.path.abspath(INPUT_FOLDER)}")
+    print(" Please check the path and run again.")
     exit()
 else:
-    print(f"✅ Found {len(csv_files)} NormalTrafficMQTT CSV files.")
+    print(f"Found {len(csv_files)} NormalTrafficMQTT CSV files.")
 
-# ===================== MALICIOUS LOG GENERATOR =====================
 malicious_categories = ["ddos", "dos", "mirai", "bruteforce", "spoofing", "recon", "web-based"]
-
 def generate_malicious_log(ts, category):
     dev = random.choice(device_pool)
-    
+   
     if category == "ddos":
         action, log_level, message = "FLOOD", "WARNING", f"High volume MQTT flood detected from {dev['type']}"
         bytes_sent = random.randint(8500, 25000)
@@ -82,12 +73,11 @@ def generate_malicious_log(ts, category):
         bytes_sent = random.randint(120, 280)
         signal = random.randint(-82, -58)
         trend = "stable"
-    else:  # web-based
+    else:
         action, log_level, message = "WEB_EXPLOIT", "ERROR", f"Web-based attack attempt on IoT management interface"
         bytes_sent = random.randint(650, 1450)
         signal = random.randint(-79, -64)
         trend = "rising"
-
     return {
         "timestamp": ts.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
         "log_level": log_level,
@@ -129,33 +119,29 @@ def generate_malicious_log(ts, category):
         "tags": ["malicious", category, "iot_attack"]
     }
 
-# ===================== GENERATE BENIGN LOGS (using your exact logic) =====================
 all_logs = []
 benign_generated = 0
-
 print("\nGenerating 60,000 benign logs from CSV files...")
-
 for fname in csv_files:
     if benign_generated >= BENIGN_LOGS_TARGET:
         break
-        
+       
     print(f"Processing {fname} ...")
     filepath = os.path.join(INPUT_FOLDER, fname)
-    
+   
     for chunk in pd.read_csv(filepath, chunksize=BATCH_SIZE, low_memory=False):
         if benign_generated >= BENIGN_LOGS_TARGET:
             break
-            
+           
         for _, row in chunk.iterrows():
             if benign_generated >= BENIGN_LOGS_TARGET:
                 break
-                
+               
             dev = random.choice(device_pool)
             ts = datetime.now(timezone.utc) - timedelta(minutes=random.randint(0, 4320))
-            
+           
             topic = str(row.get('mqtt.topic', 'iot/hospital/vitals')).lower()
-            
-            # Exact sensor logic from your original code
+           
             if "glucose" in topic:
                 unit = "mg/dL"
                 sensor_val = round(random.uniform(90, 160), 1)
@@ -171,7 +157,7 @@ for fname in csv_files:
             else:
                 unit = "units"
                 sensor_val = round(random.uniform(95, 105), 1)
-            
+           
             log_entry = {
                 "timestamp": ts.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
                 "log_level": "INFO",
@@ -214,39 +200,32 @@ for fname in csv_files:
             }
             all_logs.append(log_entry)
             benign_generated += 1
+print(f"Generated {benign_generated:,} benign logs")
 
-print(f"→ Generated {benign_generated:,} benign logs")
-
-# ===================== GENERATE MALICIOUS LOGS =====================
 print("Generating 20,731 malicious logs...")
 for _ in range(MALICIOUS_LOGS_TARGET):
     category = random.choice(malicious_categories)
     ts = datetime.now(timezone.utc) - timedelta(minutes=random.randint(0, 4320))
     mal_log = generate_malicious_log(ts, category)
     all_logs.append(mal_log)
+print(f"Generated {MALICIOUS_LOGS_TARGET:,} malicious logs")
 
-print(f"→ Generated {MALICIOUS_LOGS_TARGET:,} malicious logs")
-
-# ===================== SHUFFLE AND SAVE =====================
 print("\nShuffling all logs for random distribution...")
 random.shuffle(all_logs)
-
 print(f"Saving {len(all_logs):,} total logs into {OUTPUT_FOLDER}/ as batch_01.json ... batch_43.json")
-
 for i in range(0, len(all_logs), BATCH_SIZE):
     batch = all_logs[i:i + BATCH_SIZE]
     batch_num = (i // BATCH_SIZE) + 1
     output_file = os.path.join(OUTPUT_FOLDER, f"batch_{batch_num:02d}.json")
-    
+   
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(batch, f, indent=2)
-    
-    print(f"   → Saved {len(batch):,} logs → {output_file}")
-
+   
+    print(f" Saved {len(batch):,} logs -> {output_file}")
 print("\n" + "="*90)
-print(f"✅ SUCCESS! Generated {len(all_logs):,} mixed logs")
-print(f"   ├── Benign logs    : {benign_generated:,}")
-print(f"   └── Malicious logs : {MALICIOUS_LOGS_TARGET:,}")
+print(f"SUCCESS! Generated {len(all_logs):,} mixed logs")
+print(f" Benign logs : {benign_generated:,}")
+print(f" Malicious logs : {MALICIOUS_LOGS_TARGET:,}")
 print(f"\nSaved in folder: {OUTPUT_FOLDER}/")
 print("Files named: batch_01.json to batch_43.json")
 print("="*90)
