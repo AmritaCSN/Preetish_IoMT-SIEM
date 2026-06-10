@@ -29,11 +29,11 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
 ## Block Diagram
 
-![Project Architecture](arch.jpg)
+![Project Architecture](arch.png)
 
 ## Architecture - Attack & Remediation Flow
 
-![Project Architecture](model.jpg)
+![Project Architecture](model.png)
 
 *(Replace with your actual architecture diagram)*
 
