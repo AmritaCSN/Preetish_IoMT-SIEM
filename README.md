@@ -79,8 +79,20 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 - Highlights insider threat risks in IoMT healthcare environments
 
 ## Setup & Usage
+1. Obtaining Benign & Malicious Logs from XIoMT2024 Dataset
+   Use benign_and_malicious_logs.py
 
-2. First Convert your batch files into proper JSON Lines format (.jsonl).
+   One benign log:
+   ```bash
+   {"timestamp":"2026-04-14T14:08:54.382Z","log_level":"INFO","log_version":"1.5","facility":"hospital-ward3","environment":"production","region":"tn-india","data_center":"chennai-dc1","device":{"id":"SPO-854-1077","type":"SpO2Monitor","serial_number":"SN-448321","model":"VSM-2024","mac_address":"00:1A:2B:3E:5F:29"},"event":{"type":"DATA_TRANSMIT","category":"DataTransmission","action":"PUBLISH","id":"evt-20260414140854382","correlation_id":"corr-20260414140854382-001"},"network":{"protocol":"MQTT","mqtt_topic":"0","mqtt_qos":0,"src_ip":"10.42.0.139","dst_ip":"10.42.0.1","signal_strength_dbm":-54,"connection_type":"WiFi"},"payload":{"sensor_value":99,"sensor_unit":"units","trend":"falling","measurement_time":"2026-04-14T14:08:51.000Z"},"metrics":{"bytes_sent":242,"cpu_usage_percent":26.2,"battery_level_percent":91},"status":{"outcome":"success"},"message":"Routine SpO2Monitor reading transmitted successfully","tags":["benign","periodic","vitals"]}
+   ```
+
+   One malicious log:
+   ```bash
+   {"timestamp":"2026-04-13T21:41:56.821Z","log_level":"ERROR","log_version":"1.5","facility":"hospital-ward3","environment":"production","region":"tn-india","data_center":"chennai-dc1","device":{"id":"BLO-423-1060","type":"BloodPressureMonitor","serial_number":"SN-888387","model":"VSM-2024","mac_address":"00:1A:2B:13:0B:44"},"event":{"type":"ANOMALY_DETECTED","category":"SecurityThreat","action":"BRUTE_FORCE","id":"evt-mal-20260413214156821","correlation_id":"corr-mal-20260413214156821-001"},"network":{"protocol":"MQTT","mqtt_topic":"iot/hospital/bloodpressuremonitor/ward3/bed16","mqtt_qos":2,"src_ip":"10.42.0.139","dst_ip":"10.42.0.1","signal_strength_dbm":-65,"connection_type":"WiFi"},"payload":{"sensor_value":37.6,"sensor_unit":"°C","trend":"stable","measurement_time":"2026-04-13T21:41:53.000Z"},"metrics":{"bytes_sent":329,"cpu_usage_percent":63.7,"battery_level_percent":41},"status":{"outcome":"suspicious"},"message":"Multiple failed authentication attempts on BloodPressureMonitor","tags":["malicious","bruteforce","iot_attack"]}
+   ```
+   
+3. First Convert your batch files into proper JSON Lines format (.jsonl).
 (a) Create a directory for the flattened logs
 ```bash
 mkdir -p ../flattened_jsonl
@@ -123,21 +135,53 @@ ls -lh ../flattened_jsonl/
    </group>
    EOF
    ```
-5. Ingesting Logs
-
-
-
-
-Wazuh image showing detection of all malicious logs as high and critical alerts, benign as low
-
+5. Ingesting benign and malicious Logs to wazuh
+   ```bash
+   echo "Starting ingestion of IoMT logs..."
+      for file in batch_*.jsonl; do
+         echo "→ Processing $file"
+         while IFS= read -r line || [ -n "$line" ]; do
+            echo "$line" >> /var/ossec/logs/active-responses.log
+            sleep 0.005     # Adjust if CPU becomes too high
+         done < "$file"
+   Done
+   ```
+   
+Wazuh Dashboard showing detection of all malicious logs as high and critical alerts, benign as low
+image--------------------------------
 
    - Total events: 21,140
-   - Level 12 or above alerts: 20,731 ← This matches exactly with the number of malicious logs you generated.
-This means Wazuh is successfully detecting almost all your malicious logs as high-severity alerts. Excellent work!
+   - Level 12 or above alerts: 20,731 ← This matches exactly with the number of malicious logs generated.
+This means Wazuh is successfully detecting almost all your malicious logs as high-severity alerts.
 
 
 
 
+6. Poisoning and Sanitization
+   Use poison.py
+
+   One sanitized poisoned log:
+   ```bash
+   {"timestamp": "172.16.5.91", "log_level": "WARNING", "log_version": "172.16.2.133", "facility": "hospital-ward3", "environment": "production", "region": "tn-india", "data_center": "chennai-dc1", "device": {"id": "HEA-999-1065", "type": "HeartRateMonitor", "serial_number": "SN-240814", "model": "VSM-2024", "mac_address": "172.16.13.144"}, "event": {"type": "ANOMALY_DETECTED", "category": "SecurityThreat", "action": "normal", "id": "evt-mal-20260414211756547", "correlation_id": "corr-mal-20260414211756547-001"}, "network": {"protocol": "CoAP", "mqtt_topic": "vitals-monitor.internal", "mqtt_qos": 1, "src_ip": "172.16.11.4", "dst_ip": "172.16.8.96", "signal_strength_dbm": -80, "connection_type": "WiFi"}, "metrics": {"bytes_sent": 2545, "cpu_usage_percent": 95.2, "battery_level_percent": 17}, "status": {"outcome": "success", "result": "ok"}, "message": "Mirai-like bot command received on HeartRateMonitor", "tags": ["benign", "normal", "iot", "periodic", "vitals"], "protocol": "MQTT", "user_agent": "EdgeGateway/3.2"}
+   ```
+
+ 7. Ingesting benign, malicious and Poisoned Logs to wazuh
+    ```bash
+    echo "Starting ingestion of IoMT logs..."
+      for file in batch_*.jsonl; do
+         echo "→ Processing $file"
+         while IFS= read -r line || [ -n "$line" ]; do
+            echo "$line" >> /var/ossec/logs/active-responses.log
+            sleep 0.005     # Adjust if CPU becomes too high
+         done < "$file"
+    Done
+    ```
+
+Wazuh Dashboard showing detection of all malicious logs as high and critical alerts, benign and Poisoned as low
+img--------------------------------
+
+8. Wazuh detection report
+   Use report.py
 
 
 To remove all logs from wazuh
