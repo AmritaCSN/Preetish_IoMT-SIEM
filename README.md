@@ -35,8 +35,6 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
 ![Project Architecture](model.png)
 
-*(Replace with your actual architecture diagram)*
-
 ## 📁 Project Structure
 
 | File/Folder              | Description |
@@ -58,11 +56,10 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 | **Dataset**        | Xiomt2024                    | IoMT activity logs with benign and malicious instances |
 | **Storage**        | MinIO                        | Aggregation database (compromised by insider) |
 | **SIEM**           | Wazuh                        | Security monitoring and log analysis |
-| **Orchestration**  | Logstash / Filebeat          | Log shipping and processing |
 | **AI Layer**       | RAG + LLM                    | Threat reclassification and remediation |
 | **Scripting**      | Python 3                     | Log poisoning, validation, and LLM pipeline |
-| **Environment**    | WSL / Linux                  | Development and testing environment |
-| **Visualization**  | Kibana / Wazuh Dashboard     | Detection metrics and poisoning impact |
+| **Environment**    | AI Server / Linux                  | Development and testing environment |
+| **Visualization**  | Wazuh Dashboard     | Detection metrics and poisoning impact |
 
 ## Workflow
 
@@ -126,7 +123,17 @@ ls -lh ../flattened_jsonl/
    </group>
    EOF
    ```
+5. Ingesting Logs
 
+
+
+
+Wazuh image showing detection of all malicious logs as high and critical alerts, benign as low
+
+
+   - Total events: 21,140
+   - Level 12 or above alerts: 20,731 ← This matches exactly with the number of malicious logs you generated.
+This means Wazuh is successfully detecting almost all your malicious logs as high-severity alerts. Excellent work!
 
 
 
