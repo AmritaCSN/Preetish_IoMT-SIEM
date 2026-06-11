@@ -74,16 +74,15 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
   
 ## Software Architecture
 ```bash
-**Layer 1** – Data Ingestion
+Layer 1 – Generating Benign and Malicious Logs From Dataset 
 └── benign_and_malicious_logs.py
 Layer 2 – Poisoning Engine
-└── poison.py
-└── report.py
+└── poison.py (Poisoned logs generated using Original Malicious which go through & Evasion Techniques)
+└── report.py (Wazuh's Detection Report)
 Layer 3 – Validation Pipeline
-└── validation.py
-↓ (malicious_validation_summary.txt)
+└── validation.py (gives Summary and saved as malicious_validation_summary.txt)
 Layer 4 – AI Remediation & Insights
-├── retrieval_remediation.py     → Batch Analysis + Report
+├── retrieval_remediation.py     → Retrives Summary and gives Analysis + Remediation
 └── interactive_AI.py            → Real-time SOC Assistant (Chat)
 ```
 
@@ -238,15 +237,23 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 
    Use **retrieval_remediation.py**
 
+   ```bash
+   python3 interactive_AI.py
+   ```
+
    This will make RAG(Langchain) to fetch the validation and LLM(Qwen) will give the detailed Insights and Measures that can be used by SOC Analysts.
 
 ## Optional for Interactive AI setup
 
-   Use **Interactive_AI.py**
+   Use **interactive_AI.py** and run using:
+
+   ```bash
+   python3 interactive_AI.py
+   ```
 
    This will Act like the User Interface To ask more Questions like:
 
-   - Summarize the poisoning attack"
+   - "Summarize the poisoning attack"
    - "How many logs were bypassed?"
    - "Give remediation steps"
    - "Explain why Wazuh missed them
@@ -254,7 +261,4 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 
 
 
-To remove all logs from wazuh
-- Open your Wazuh Dashboard.
-- From the left menu, go to Indexer management → Dev Tools (or search for "Dev Tools").
-- In the left panel (console), paste the following command and click the green play/run button: DELETE /wazuh-alerts-*
+
