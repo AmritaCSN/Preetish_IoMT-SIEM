@@ -21,7 +21,7 @@ retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
 
 llm = OllamaLLM(model=LLM_MODEL, base_url=BASE_URL, temperature=0.3)
 
-print(" RAG System is Ready!\n")
+print(" Question: Analyze the validation summary. Explain the poisoning attack and suggest remediation steps for the SOC team.\n Answer: \n")
 
 query = "Analyze the validation summary. Explain the poisoning attack and suggest remediation steps for the SOC team."
 
