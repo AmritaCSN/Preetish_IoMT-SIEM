@@ -219,6 +219,20 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 
 11. AI setup for Remediation
 
+   Use **retrieval_remediation.py**
+
+   This will make RAG(Langchain) to fetch the validation and LLM(Qwen) will give the detailed Insights and Measures that can be used by SOC Analysts.
+
+## Optional for Interactive AI setup
+
+   Use **Interactive_AI.py**
+
+   This will Act like the User Interface To ask more Questions like:
+
+   - Summarize the poisoning attack"
+   - "How many logs were bypassed?"
+   - "Give remediation steps"
+   - "Explain why Wazuh missed them
     
 
 
