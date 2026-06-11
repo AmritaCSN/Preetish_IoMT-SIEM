@@ -78,7 +78,7 @@ Layer 1 – Generating Benign and Malicious Logs From Dataset
 └── benign_and_malicious_logs.py
 Layer 2 – Poisoning Engine
 └── poison.py (Poisoned logs generated using Original Malicious which go through & Evasion Techniques)
-└── report.py (Wazuh's Detection Report)
+└── report.py (Detection Report from Wazuh)
 Layer 3 – Validation Pipeline
 └── validation.py (gives Summary and saved as malicious_validation_summary.txt)
 Layer 4 – AI Remediation & Insights
