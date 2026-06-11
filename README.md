@@ -189,9 +189,16 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 
 7. Wazuh detection report
 
-   Use report.py
+   Use **report.py**
+
+   The Wazuh report is extremely valuable because:
+
+- It shows what Wazuh actually detected in real-time from your logs.
+- It correlates raw logs into security events with severity (Level 12 & 15 are high).
+- It helps you validate whether your poisoned script was successfully detected.
+- You can measure detection rate, false positives, and gaps in your custom rules.
    
-8. Log Validation
+9. Log Validation
 
    Now we use a Pyhton script to validate logs from MinIO and Wazuh's Detction report
 
@@ -201,7 +208,20 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
    ```bash
    cat malicious_validation_summary.txt
    ```
-   
+   ![Summary](summary.jpeg)
+
+10. Pulling and running Qwen using Ollama
+
+    ```bash
+    OLLAMA_HOST=localhost:11435 ollama pull qwen2.5:7b
+    OLLAMA_HOST=localhost:11435 ollama run qwen2.5:7b
+    ```
+
+11. AI setup for Remediation
+
+    
+
+
 
 To remove all logs from wazuh
 - Open your Wazuh Dashboard.
