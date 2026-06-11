@@ -39,7 +39,7 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
 | File/Folder              | Description |
 |--------------------------|-----------|
-| `cic_to_logs.py` / `xiomt_to_logs.py` | Converts Xiomt2024 dataset into structured JSON logs |
+| `xiomt_to_logs.py` | Converts Xiomt2024 dataset into structured JSON logs |
 | `poisoned_script.py`     | Applies 7 evasion techniques and generates `benign.json` (poisoned + original benign logs) |
 | `validation_script.py`   | Extracts logs from MinIO & Wazuh, validates bypassed malicious logs |
 | `minio-to-wazuh.conf`    | Logstash / Filebeat configuration for ingestion |
