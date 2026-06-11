@@ -39,7 +39,7 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
 | File/Folder              | Description |
 |--------------------------|-----------|
-| `xiomt_to_logs.py` | Converts Xiomt2024 dataset into structured JSON logs |
+| `benign_malicious_logs.py` | Converts Xiomt2024 dataset into structured JSON logs |
 | `poisoned_script.py`     | Applies 7 evasion techniques and generates `benign.json` (poisoned + original benign logs) |
 | `validation_script.py`   | Extracts logs from MinIO & Wazuh, validates bypassed malicious logs |
 | `minio-to-wazuh.conf`    | Logstash / Filebeat configuration for ingestion |
@@ -71,7 +71,19 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 5. **RAG + LLM Recovery**
    - RAG retrieves validation differences
    - LLM reclassifies threats, explains poisoning, and suggests mitigations
-  
+
+
+### IoMT Log Poisoning & Wazuh Evaluation Scripts
+
+| File Name              | Description | Purpose |
+|------------------------|-----------|---------|
+| `benign_malicious.py`  | Generates 80,731 synthetic hospital IoT logs (60k benign + 20.7k malicious) from CSV patterns and saves as JSON batches. | Dataset generation for training/testing IoMT anomaly detection systems. |
+| `poison.py`            | Sanitizes malicious logs using multiple evasion techniques and saves them as poisoned logs (`batch_1p.jsonl`). | Create adversarial examples to test Wazuh / SIEM evasion. |
+| `report.py`            | Extracts and filters Wazuh alerts into a structured CSV report. | Generate human-readable detection report from Wazuh. |
+| `validation.py`        | Compares dataset malicious logs against Wazuh alerts and computes detection/bypass statistics. | Validate effectiveness of log poisoning attack. |
+| `retrieval.py`         | One-shot RAG analysis of the validation summary using Ollama LLM. | Automated technical report on poisoning incident and remediation. |
+| `interactive.py`       | Interactive RAG chatbot for querying the validation summary. | Enable SOC analysts to interactively explore poisoning results. |
+
 ## Software Architecture
 ```bash
 Layer 1 – Generating Benign and Malicious Logs From Dataset 
