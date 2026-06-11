@@ -75,15 +75,25 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 ## Software Architecture
 
 Layer 1 – Data Ingestion
+
 └── benign_and_malicious_logs.py
+
 Layer 2 – Poisoning Engine
+
 └── poison.py
+
 └── report.py
+
 Layer 3 – Validation Pipeline
+
 └── validation.py
+
 ↓ (malicious_validation_summary.txt)
+
 Layer 4 – AI Remediation & Insights
+
 ├── retrieval_remediation.py     → Batch Analysis + Report
+
 └── interactive_AI.py            → Real-time SOC Assistant (Chat)
 
 ## Key Outcomes
