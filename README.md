@@ -214,6 +214,7 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 10. Pulling and running Qwen using Ollama
 
     ```bash
+    OLLAMA_HOST=0.0.0.0:11435 ollama serve &
     OLLAMA_HOST=localhost:11435 ollama pull qwen2.5:7b
     OLLAMA_HOST=localhost:11435 ollama run qwen2.5:7b
     ```
