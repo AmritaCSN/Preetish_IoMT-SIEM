@@ -74,7 +74,7 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
   
 ## Software Architecture
 ```bash
-Layer 1 – Data Ingestion
+**Layer 1** – Data Ingestion
 └── benign_and_malicious_logs.py
 Layer 2 – Poisoning Engine
 └── poison.py
