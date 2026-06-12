@@ -156,6 +156,7 @@ Layer 4 – AI Remediation & Insights
    EOF
    ```
 ## Step 4 - Ingesting benign and malicious Logs to wazuh
+
    ```bash
    echo "Starting ingestion of IoMT logs..."
       for file in batch_*.jsonl; do
@@ -229,11 +230,11 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 
 ## Step 9 - Pulling and running Qwen using Ollama
 
-    ```bash
+   ```bash
     OLLAMA_HOST=0.0.0.0:11435 ollama serve &
     OLLAMA_HOST=localhost:11435 ollama pull qwen2.5:7b
     OLLAMA_HOST=localhost:11435 ollama run qwen2.5:7b
-    ```
+ ```
 
 ## Step 10 - AI setup for Remediation
 
