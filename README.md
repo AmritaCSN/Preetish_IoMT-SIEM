@@ -125,6 +125,8 @@ Layer 4 – AI Remediation & Insights
    ```
    ![JSONL_Logs](jsonl.jpeg)
 
+   Each batch consists of 2000 logs with random number of benign and malicious logs.
+
 ## Step 3 - Configure Wazuh to Read Them, go to cd /var/ossec/etc/rules/
    ```bash
    cat > local_rules.xml << 'EOF'
@@ -177,6 +179,10 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
    
    Use poison.py
 
+   The code makes exact copy of 20731 original malicious logs, and tunes the 20731 copied malicious logs using 7 evasion techniques to convert into 20731 benign-looking poisoned logs.
+
+**Goal of Poisoning:** For the poisoned logs to look like benign when they are having similar features of original malicious logs inorder to bypass detection
+   
    One sanitized poisoned log:
    ```bash
    {"timestamp": "172.16.5.91", "log_level": "WARNING", "log_version": "172.16.2.133", "facility": "hospital-ward3", "environment": "production", "region": "tn-india", "data_center": "chennai-dc1", "device": {"id": "HEA-999-1065", "type": "HeartRateMonitor", "serial_number": "SN-240814", "model": "VSM-2024", "mac_address": "172.16.13.144"}, "event": {"type": "ANOMALY_DETECTED", "category": "SecurityThreat", "action": "normal", "id": "evt-mal-20260414211756547", "correlation_id": "corr-mal-20260414211756547-001"}, "network": {"protocol": "CoAP", "mqtt_topic": "vitals-monitor.internal", "mqtt_qos": 1, "src_ip": "172.16.11.4", "dst_ip": "172.16.8.96", "signal_strength_dbm": -80, "connection_type": "WiFi"}, "metrics": {"bytes_sent": 2545, "cpu_usage_percent": 95.2, "battery_level_percent": 17}, "status": {"outcome": "success", "result": "ok"}, "message": "Mirai-like bot command received on HeartRateMonitor", "tags": ["benign", "normal", "iot", "periodic", "vitals"], "protocol": "MQTT", "user_agent": "EdgeGateway/3.2"}
