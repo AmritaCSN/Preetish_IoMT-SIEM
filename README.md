@@ -250,7 +250,7 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
    Use **retrieval_remediation.py**
 
    ```bash
-   python3 interactive_AI.py
+   python3 retrieval_remediation.py
    ```
 
    This will make RAG(Langchain) to fetch the validation and LLM(Qwen) will give the detailed Insights and Measures that can be used by SOC Analysts.
