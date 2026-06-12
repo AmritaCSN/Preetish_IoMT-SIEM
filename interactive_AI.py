@@ -1,4 +1,4 @@
-cat > rag_interactive.py << 'EOF'
+cat > interactive_AI.py << 'EOF'
 from langchain_ollama import OllamaLLM, OllamaEmbeddings
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
