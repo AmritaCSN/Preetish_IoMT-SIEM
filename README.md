@@ -35,20 +35,6 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 
 ![Project Architecture](model.png)
 
-## 📁 Project Structure
-
-| File/Folder              | Description |
-|--------------------------|-----------|
-| `benign_malicious_logs.py` | Converts Xiomt2024 dataset into structured JSON logs |
-| `poisoned_script.py`     | Applies 7 evasion techniques and generates `benign.json` (poisoned + original benign logs) |
-| `validation_script.py`   | Extracts logs from MinIO & Wazuh, validates bypassed malicious logs |
-| `minio-to-wazuh.conf`    | Logstash / Filebeat configuration for ingestion |
-| `rag_pipeline.py`        | RAG orchestration for retrieval and validation data |
-| `llm_remediation.py`     | LLM-based reclassification, explanation & remediation generation |
-| `arch.png`              | Block diagram of the pipeline |
-|`model.png`              | System architecture - Attack & Remediation Flow  |
-| `README.md`              | This file |
-
 ## 🔧 Tools & Technologies Used
 
 | Category           | Tool/Technology              | Description |
@@ -68,12 +54,11 @@ Malicious logs (e.g., DDoS, spoofing, etc.) are transformed to appear benign whi
 2. **Insider Poisoning** — Malicious logs transformed using 7 techniques
 3. **SIEM Processing** — Poisoned logs sent to Wazuh (most bypass detection)
 4. **Validation** — Python script compares MinIO vs Wazuh logs to detect bypasses
-5. **RAG + LLM Recovery**
+5. **RAG + LLM**
    - RAG retrieves validation differences
    - LLM reclassifies threats, explains poisoning, and suggests mitigations
-
-
-### IoMT Log Poisoning & Wazuh Evaluation Scripts
+  
+## 📁 IoMT Log Poisoning & Wazuh Evaluation Scripts
 
 | File Name              | Description | Purpose |
 |------------------------|-----------|---------|
@@ -101,7 +86,7 @@ Layer 4 – AI Remediation & Insights
 ## Key Outcomes
 
 - Demonstrates effectiveness of log poisoning against SIEM systems
-- Shows how RAG + LLM can recover and explain hidden threats
+- Shows how RAG + LLM can explain hidden threats
 - Provides actionable remediation for SOC teams
 - Highlights insider threat risks in IoMT healthcare environments
 
