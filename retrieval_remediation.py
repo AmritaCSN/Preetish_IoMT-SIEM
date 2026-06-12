@@ -1,4 +1,4 @@
-cat > rag_validation.py << 'EOF'
+cat > retrieval_remediation.py << 'EOF'
 from langchain_ollama import OllamaLLM, OllamaEmbeddings
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
