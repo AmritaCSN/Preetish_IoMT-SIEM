@@ -189,7 +189,8 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
    ```
 
 ## Step 6 - Ingesting benign, malicious and Poisoned Logs to wazuh
-    ```bash
+
+ ```bash
     echo "Starting ingestion of IoMT logs..."
       for file in batch_*.jsonl; do
          echo "→ Processing $file"
@@ -198,7 +199,7 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
             sleep 0.005     # Adjust if CPU becomes too high
          done < "$file"
     Done
-    ```
+ ```
 
 Wazuh Dashboard showing detection of all malicious logs as high and critical alerts, benign and Poisoned as low
 ![Poisoned_Detection](poisoned_detection.jpeg)
