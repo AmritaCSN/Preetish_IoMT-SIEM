@@ -91,7 +91,8 @@ Layer 4 – AI Remediation & Insights
 - Highlights insider threat risks in IoMT healthcare environments
 
 ## Setup & Usage
-1. Obtaining Benign & Malicious Logs from XIoMT2024 Dataset
+
+## Step 1 - Obtaining Benign & Malicious Logs from XIoMT2024 Dataset
 
    Use **benign_and_malicious_logs.py**
 
@@ -107,7 +108,7 @@ Layer 4 – AI Remediation & Insights
    {"timestamp":"2026-04-13T21:41:56.821Z","log_level":"ERROR","log_version":"1.5","facility":"hospital-ward3","environment":"production","region":"tn-india","data_center":"chennai-dc1","device":{"id":"BLO-423-1060","type":"BloodPressureMonitor","serial_number":"SN-888387","model":"VSM-2024","mac_address":"00:1A:2B:13:0B:44"},"event":{"type":"ANOMALY_DETECTED","category":"SecurityThreat","action":"BRUTE_FORCE","id":"evt-mal-20260413214156821","correlation_id":"corr-mal-20260413214156821-001"},"network":{"protocol":"MQTT","mqtt_topic":"iot/hospital/bloodpressuremonitor/ward3/bed16","mqtt_qos":2,"src_ip":"10.42.0.139","dst_ip":"10.42.0.1","signal_strength_dbm":-65,"connection_type":"WiFi"},"payload":{"sensor_value":37.6,"sensor_unit":"°C","trend":"stable","measurement_time":"2026-04-13T21:41:53.000Z"},"metrics":{"bytes_sent":329,"cpu_usage_percent":63.7,"battery_level_percent":41},"status":{"outcome":"suspicious"},"message":"Multiple failed authentication attempts on BloodPressureMonitor","tags":["malicious","bruteforce","iot_attack"]}
    ```
    
-2. First Convert your batch files into proper JSON Lines format (.jsonl)
+## Step 2 - First Convert your batch files into proper JSON Lines format (.jsonl)
 
    (a) Create a directory for the flattened logs
    ```bash
@@ -124,7 +125,7 @@ Layer 4 – AI Remediation & Insights
    ```
    ![JSONL_Logs](jsonl.jpeg)
 
-3. Configure Wazuh to Read Them, go to cd /var/ossec/etc/rules/
+## Step 3 - Configure Wazuh to Read Them, go to cd /var/ossec/etc/rules/
    ```bash
    cat > local_rules.xml << 'EOF'
    <!-- X-IoMT Dataset - IoT Medical Device Attack Detection -->
@@ -152,7 +153,7 @@ Layer 4 – AI Remediation & Insights
    </group>
    EOF
    ```
-4. Ingesting benign and malicious Logs to wazuh
+## Step 4 - Ingesting benign and malicious Logs to wazuh
    ```bash
    echo "Starting ingestion of IoMT logs..."
       for file in batch_*.jsonl; do
@@ -172,10 +173,7 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
    - Level 12 or above alerts: 20,731 ← This matches exactly with the number of malicious logs generated.
 This means Wazuh is successfully detecting almost all your malicious logs as high-severity alerts.
 
-
-
-
-5. Poisoning and Sanitization
+## Step 5 - Poisoning and Sanitization
    
    Use poison.py
 
@@ -184,7 +182,7 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
    {"timestamp": "172.16.5.91", "log_level": "WARNING", "log_version": "172.16.2.133", "facility": "hospital-ward3", "environment": "production", "region": "tn-india", "data_center": "chennai-dc1", "device": {"id": "HEA-999-1065", "type": "HeartRateMonitor", "serial_number": "SN-240814", "model": "VSM-2024", "mac_address": "172.16.13.144"}, "event": {"type": "ANOMALY_DETECTED", "category": "SecurityThreat", "action": "normal", "id": "evt-mal-20260414211756547", "correlation_id": "corr-mal-20260414211756547-001"}, "network": {"protocol": "CoAP", "mqtt_topic": "vitals-monitor.internal", "mqtt_qos": 1, "src_ip": "172.16.11.4", "dst_ip": "172.16.8.96", "signal_strength_dbm": -80, "connection_type": "WiFi"}, "metrics": {"bytes_sent": 2545, "cpu_usage_percent": 95.2, "battery_level_percent": 17}, "status": {"outcome": "success", "result": "ok"}, "message": "Mirai-like bot command received on HeartRateMonitor", "tags": ["benign", "normal", "iot", "periodic", "vitals"], "protocol": "MQTT", "user_agent": "EdgeGateway/3.2"}
    ```
 
- 6. Ingesting benign, malicious and Poisoned Logs to wazuh
+## Step 6 - Ingesting benign, malicious and Poisoned Logs to wazuh
     ```bash
     echo "Starting ingestion of IoMT logs..."
       for file in batch_*.jsonl; do
@@ -199,7 +197,7 @@ This means Wazuh is successfully detecting almost all your malicious logs as hig
 Wazuh Dashboard showing detection of all malicious logs as high and critical alerts, benign and Poisoned as low
 ![Poisoned_Detection](poisoned_detection.jpeg)
 
-7. Wazuh detection report
+## Step 7 - Wazuh detection report
 
    Use **report.py**
 
@@ -210,7 +208,7 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
 - It helps you validate whether your poisoned script was successfully detected.
 - You can measure detection rate, false positives, and gaps in your custom rules.
    
-9. Log Validation
+## Step 8 - Log Validation
 
    Now we use a Pyhton script to validate logs from MinIO and Wazuh's Detction report
 
@@ -222,7 +220,7 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
    ```
    ![Summary](summary.jpeg)
 
-10. Pulling and running Qwen using Ollama
+## Step 9 - Pulling and running Qwen using Ollama
 
     ```bash
     OLLAMA_HOST=0.0.0.0:11435 ollama serve &
@@ -230,7 +228,7 @@ Wazuh Dashboard showing detection of all malicious logs as high and critical ale
     OLLAMA_HOST=localhost:11435 ollama run qwen2.5:7b
     ```
 
-11. AI setup for Remediation
+## Step 10 - AI setup for Remediation
 
    Use **retrieval_remediation.py**
 
